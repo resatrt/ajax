@@ -39,7 +39,7 @@ var server = http.createServer(function (request, response) {
     response.write(string)
     response.end()
 
-  } else if (path === '/pay' && method === 'POST') {
+  } else if (path === '/pay' ) {
     response.setHeader('Content-Type', 'text/json;charset=utf-8')
     response.setHeader('Access-Control-Allow-Origin','heep://tony.com:8002')
     response.statusCode = 200

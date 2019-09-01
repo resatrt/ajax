@@ -10,51 +10,46 @@
 
 <body>
     <button id="button">点我</button>
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
-        window.jQuery = function (nodeOrSelector) {
-            let nodes = {}
-            nodes.addClass = function () { }
-            nodes.html = function () { }
-            return nodes
-        }
-        window.jQuery.ajax = function ({ url, method, body, successFn, failFn ,headers}) {
-            let request = new XMLHttpRequest
-            request.open(method, url)
-            for (let key in headers) {
-                let value = headers[key]
-                request.setRequestHeader(key, value)
-            }
-            request.onreadystatechange = function () {
-                if (request.readyState === 4) {
-                    if (request.status >= 200 && request.status < 300) {
-                        successFn.call(undefined, request.responseText)
-                    } else if (request.status >= 400) {
-                        failFn.call(undefined, request)
+
+        window.jQuery.ajax = function ({ url, method, body, headers }) {
+            return new Promise(function (resolve, reject) {
+                let request = new XMLHttpRequest
+                request.open(method, url)
+                for (let key in headers) {
+                    let value = headers[key]
+                    request.setRequestHeader(key, value)
+                }
+                request.onreadystatechange = function () {
+                    if (request.readyState === 4) {
+                        if (request.status >= 200 && request.status < 300) {
+                            resolve.call(undefined, request.responseText)
+                        } else if (request.status >= 400) {
+                            reject.call(undefined, request)
+                        }
                     }
                 }
-            }
-            request.send(body)
+                request.send(body)
+
+            })
         }
-        function f1(responseText) { }
-        function f2(responseText) { }
+
         button.addEventListener('click', function () {
-            window.jQuery.ajax(
+            $.ajax(
                 {
-                    method: 'POST',
                     url: '/pay',
-                    headers: {
-                        'content-type': 'x-www-form-urlencoded',
-                        'age': '20'
+                    method: 'POST',
+                }).then(
+                    (responseText) => {
+                        console.log(responseText);
+
                     },
-                    body: 'a=1&b=2',
-                    successFn: (x) => {
-                        console.log(x.status), console.log(x.responseText)
-                    },
-                    failFn: (x) => { console.log(x.status), console.log(x.responseText) }
-                }
-            )
+                    (request) => {
+                        console.log(request);
+                    }
+                )
+
         })
 
 
